@@ -2,8 +2,8 @@ signature COMBINE =
 sig
     type 'a f
 	    
-    val combine : (('a * 'b -> order) *
-		   ('a -> 'c) * ('b -> 'c) * ('a * 'b -> 'c))
+    val combine : ('a * 'b -> order) *
+		  ('a -> 'c) * ('b -> 'c) * ('a * 'b -> 'c)
 		  -> ('a f * 'b f) -> 'c f
 end
 
