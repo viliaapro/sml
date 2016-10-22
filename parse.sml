@@ -5,11 +5,10 @@ local
     open OptionSearch
 in
 
-type ('a, 'b) ok = 'a -> 'b OptionSearch.f
-
 exception Transduction
 			    
-fun transduce (f : ('a flow, 'b * 'a flow) ok) (xs : 'a flow) : 'b flow =
+fun transduce (f : 'a flow -> ('b * 'a flow) OptionSearch.f) (xs : 'a flow)
+    : 'b flow =
   case f xs
    of NONE => raise Transduction
     | SOME (y, xs') => CONS (y, fn () => transduce f xs')
