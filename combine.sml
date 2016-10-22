@@ -32,11 +32,11 @@ fun combine (cmp	: 'a * 'b -> order,
   let
       fun f (xs, NIL) = map left  xs
 	| f (NIL, ys) = map right ys
-	| f (p as CONS (x, xs), q as CONS (y, ys)) =
+	| f (xs as CONS (x, xs'), ys as CONS (y, ys')) =
 	  case cmp (x, y)
-	   of LESS    => CONS (left  x, fn () => f (force xs, q))
-	    | GREATER => CONS (right y, fn () => f (p, force ys))
-	    | EQUAL => CONS (center (x, y), fn () => f (force xs, force ys))
+	   of LESS    => CONS (left  x, fn () => f (force xs', ys))
+	    | GREATER => CONS (right y, fn () => f (xs, force ys'))
+	    | EQUAL => CONS (center (x, y), fn () => f (force xs', force ys'))
   in f (xs, ys)
   end
 
