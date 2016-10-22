@@ -24,9 +24,6 @@ end
     
 structure OptionSearch : SEARCH =
 struct
-local
-    open Prelude
-in
 
 type 'a f = 'a option
 	       
@@ -49,13 +46,12 @@ fun par (f, g) (x, y) =
     | (_, NONE) => NONE
     | (SOME x', SOME y') => SOME (x', y')
 
-end (* local *)
 end (* OptionSearch *)
 
 structure FlowSearch : SEARCH =
 struct
 local
-    open Prelude Flow
+    open Flow
 in
 
 type 'a f = 'a flow
