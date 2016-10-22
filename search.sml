@@ -66,7 +66,7 @@ fun empty x			= NIL
 fun seq (f, g) x		= foldl (op @) NIL (map g (f x))
 fun alt (f, g) x		= f x @ g x
 			  
-fun par (f, g) (x, y)		= cartesian (f x) (g y)
+fun par (f, g) (x, y)		= cartesian (f x, g y)
 					
 end (* local *)
 end (* FlowSearch *)

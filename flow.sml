@@ -56,7 +56,7 @@ fun foldl f e xs =
 			      
 fun foldr f e xs = List.foldr f e (list xs)
 
-fun cartesian xs ys =
+fun cartesian (xs, ys) =
   foldl (op @) NIL
 	(map (fn x =>
 		 map (fn y =>
