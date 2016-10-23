@@ -4,7 +4,7 @@ sig
 	    
     val combine : ('a * 'b -> order) *
 		  ('a -> 'c) * ('b -> 'c) * ('a * 'b -> 'c)
-		  -> ('a f * 'b f) -> 'c f
+		  -> 'a f * 'b f -> 'c f
 end
 
 signature KEY_COMBINE =
@@ -12,7 +12,7 @@ sig
     type 'a f
 	    
     val combine : ('a -> 'c) * ('b -> 'c) * ('a * 'b -> 'c)
-		  -> ('a f * 'b f) -> 'c f
+		  -> 'a f * 'b f -> 'c f
 end
 
 structure FlowCombine : COMBINE =
