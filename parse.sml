@@ -16,14 +16,14 @@ fun transduce (f : 'a flow -> ('b * 'a flow) OptionSearch.f) (xs : 'a flow)
 end (* local *)
 end (* Transduction *)
 	 
-functor SearchParse (K : SEARCH) =
+functor SearchParse (S : SEARCH) =
 struct
 local
-    structure X = SearchExtra (K)
-    open Prelude Flow K X
+    structure X = SearchExtra (S)
+    open Prelude Flow S X
 in
 
-type ('a, 'b) search = 'a -> 'b K.f
+type ('a, 'b) search = 'a -> 'b S.f
 type ('a, 'b) parser = ('a flow, 'b * 'a flow) search
 				
 val get : ('a flow, 'a * 'a flow) search =
