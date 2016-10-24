@@ -36,7 +36,7 @@ fun item (f : ('a, 'b) search) : ('a, 'b) parser =
 fun skip (f : ('a, 'b) parser) : ('a flow, 'a flow) search =
   seq (f, unit o snd)
       
-fun snarf (f : ('a, 'b) parser) : ('a flow, 'b list * 'a flow) search =
+fun snarf (f : ('a, 'b) parser) : ('a, 'b list) parser =
   let
       val init = unit o (fn xs => (nil, xs))
       val step = seq (second f,
