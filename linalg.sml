@@ -78,7 +78,7 @@ fun inner (xs, ys) =
   end
 
 end (* local *)
-end (* MapInner *)
+end (* KeyInner *)
 
 functor ScaleLeftInner (structure S : SCALE;
 			structure M : MONOID where
@@ -121,7 +121,7 @@ type scalar	= S.scalar
 fun scaleLeft  (a, xs) = M.map (fn x => S.scaleLeft  (a, x)) xs
 fun scaleRight (xs, a) = M.map (fn x => S.scaleRight (x, a)) xs
 
-end (* ListScale *)
+end (* MapScale *)
 
 functor MonoidScale (structure M : MONOID) : SCALE =
 struct
@@ -145,7 +145,7 @@ type u = T.u M.f
 
 fun tensor (xs, y) = M.map (fn x => T.tensor (x, y)) xs
 
-end (* ListTensor *)
+end (* MapTensor *)
     
 functor ScaleTensor (structure S : SCALE) : TENSOR =
 struct
