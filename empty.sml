@@ -16,13 +16,13 @@ type 'a f	= 'a Flow.flow
 val empty	= Flow.NIL
 end
 
-functor BoxEmpty (structure F : EMPTY;
+functor BoxEmpty (structure E : EMPTY;
 		  type 'a box)
 	: EMPTY =
 struct
 
-type 'a f = 'a box F.f
+type 'a f = 'a box E.f
 
-fun empty p = F.empty
+val empty = E.empty
 
 end (* BoxEmpty *)
