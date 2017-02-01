@@ -10,6 +10,8 @@ use "filter.sml";
 use "foldl.sml";
 use "combine.sml";
 
+use "boiler.sml";
+
 use "linalg.sml";
 
 use "search.sml";
