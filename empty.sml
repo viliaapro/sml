@@ -17,19 +17,15 @@ val empty	= Flow.NIL
 end
 
 functor KeyEmpty (structure E : EMPTY;
-		  structure K : KEY)
+		  type key)
 	: EMPTY =
 struct
-local
-    open KeyValue K
-in
 
 type 'a f		= (key * 'a) E.f
 				       
 val empty		= E.empty
 
-end (* local *)
-end (* EmptyEmpty *)
+end (* KeyEmpty *)
 
 functor LazyEmpty (structure E : EMPTY)
 	: EMPTY =

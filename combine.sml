@@ -57,42 +57,39 @@ end (* local *)
 end (* ListCombine *)
 
 functor KeyCombine (structure C : COMBINE;
-		    structure K : ORD_KEY)
+		    structure O : ORD)
 	: KEY_COMBINE =
 struct
-local open KeyValue K
+local
+    structure M  = KeyMap  (type key = O.t)
+    structure M2 = KeyMap2 (type key = O.t)
+    open M M2 O
 in
 
-type 'a f = (key * 'a) C.f
+type 'a f = (O.t * 'a) C.f
 				       
 fun combine (l, r, c) =
-  C.combine (keyLift compare, lift l, lift r, lift2 c)
+  let
+      fun cmp ((k, _), (k', _)) = compare (k, k')
+  in
+      C.combine (cmp, map l, map r, map2 c)
+  end
 
 end (* local *)
 end (* KeyCombine *)
 
-functor LazyKeyCombine (structure C : KEY_COMBINE)
+functor MapKeyCombine (structure C : KEY_COMBINE;
+		       structure M : MAP;
+		       structure M2 : MAP2 where
+		       type 'a f = 'a M.f)
 	: KEY_COMBINE =
 struct
-local open Lazy
+local open M M2
 in
 
-type 'a f = 'a thunk C.f
+type 'a f = 'a M.f C.f
 
-fun combine (l, r, c) = C.combine (lift l, lift r, lift2 c)
-
-end (* local *)
-end (* LazyKeyCombine *)
-
-functor RefKeyCombine (structure C : KEY_COMBINE)
-	: KEY_COMBINE =
-struct
-local open Ref
-in
-
-type 'a f = 'a ref C.f
-
-fun combine (l, r, c) = C.combine (lift l, lift r, lift2 c)
+fun combine (l, r, c) = C.combine (map l, map r, map2 c)
 
 end (* local *)
-end (* RefKeyCombine *)
+end (* MapKeyCombine *)

@@ -33,7 +33,7 @@ functor Unfold (structure M : MAP;
 struct
 local
     structure T = Tree (type 'a f = 'a M.f)
-    open Prelude KeyValue M C F T
+    open Prelude M C F T
 in
 
 fun unfold (graph : 'a f f) (root : 'a f) : 'a tree f =

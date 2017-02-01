@@ -17,15 +17,15 @@ val filter		= Flow.filter
 end
 
 functor KeyFilter (structure F : FILTER;
-		   structure K : KEY)
+		   type key)
 	: FILTER =
 struct
-local open KeyValue K
+local open Prelude
 in
 
-type 'a f		= (key * 'a) F.f
+type 'a f = (key * 'a) F.f
 				       
-fun filter p		= F.filter (p o value)
+fun filter p = F.filter (p o snd)
 
 end (* local *)
 end (* KeyFilter *)

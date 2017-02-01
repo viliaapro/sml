@@ -1,11 +1,11 @@
 use "prelude.sml";
-use "lazy.sml";
-use "ref.sml";
+
 use "flow.sml";
-use "keyvalue.sml";
+use "mutlist.sml";
 
 use "empty.sml";
 use "map.sml";
+use "map2.sml";
 use "filter.sml";
 use "foldl.sml";
 use "combine.sml";

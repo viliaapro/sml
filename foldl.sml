@@ -17,24 +17,22 @@ val foldl		= Flow.foldl
 end
 
 functor KeyFoldl (structure F : FOLDL;
-		  structure K : KEY)
+		  type key)
 	: FOLDL =
 struct
-local open KeyValue K
+local open Prelude
 in
 
 type 'a f		= (key * 'a) F.f
 				       
-fun foldl f		= F.foldl (fn (x, y) => f (value x, y))
+fun foldl f		= F.foldl (fn (x, y) => f (snd x, y))
 
 end (* local *)
 end (* KeyFoldl *)
 
-functor LazyFoldl (structure F : FOLDL)
-	: FOLDL =
+functor LazyFoldl (structure F : FOLDL) : FOLDL =
 struct
-local
-    open Lazy
+local open Lazy
 in
 
 type 'a f = 'a thunk F.f
@@ -44,12 +42,11 @@ fun foldl f = F.foldl (fn (x, y) => f (force x, y))
 end (* local *)
 end (* LazyFoldl *)
 
-functor RefFoldl (structure F : FOLDL)
-	: FOLDL =
+functor RefFoldl (structure F : FOLDL) : FOLDL =
 struct
 
 type 'a f = 'a ref F.f
 
-fun foldl f = F.foldl (fn (x, y) => f (!x, y))
+fun foldl f = F.foldl (fn (ref x, y) => f (x, y))
 
 end (* RefFoldl *)

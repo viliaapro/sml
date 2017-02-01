@@ -1,3 +1,9 @@
+signature ORD =
+sig
+    type t	     
+    val compare : t * t -> order
+end
+
 structure Prelude =
 struct
 
@@ -10,4 +16,12 @@ fun uncurry f (x, y) = f  x  y;
 fun fst (x, _) = x
 fun snd (_, y) = y
 
-end
+end (* Prelude *)
+
+structure Lazy = struct
+
+type 'a thunk = unit -> 'a
+
+fun force x = x ()
+			  
+end (* Lazy *)

@@ -3,7 +3,7 @@ sig
     type 'a f
     val map : ('a -> 'b) -> 'a f -> 'b f
 end
-
+    
 structure ListMap : MAP =
 struct
 type 'a f	= 'a list	       
@@ -16,43 +16,43 @@ type 'a f	= 'a Flow.flow
 val map		= Flow.map
 end
 
-functor KeyMap (structure M : MAP;
-		structure K : KEY)
-	: MAP =
-struct
-local open KeyValue K
-in
-
-type 'a f		= (key * 'a) M.f
-				       
-fun map f		= M.map (lift f)
-
-end (* local *)
-end (* KeyMap *)
-
-functor LazyMap (structure M : MAP)
-	: MAP =
+structure LazyMap : MAP =
 struct
 local open Lazy
 in
 
-type 'a f = 'a thunk M.f
+type 'a f = 'a thunk
 
-fun map f = M.map (lift f)
+fun map f x = fn () => f (force x)
 
 end (* local *)
 end (* LazyMap *)
 
-functor RefMap (structure M : MAP)
+structure RefMap : MAP =
+struct
+
+type 'a f = 'a ref
+
+fun map f = ref o f o (op !)
+
+end (* RefMap *)
+    
+functor ComposeMap (structure M : MAP;
+		    structure N : MAP)
 	: MAP =
 struct
-local open Ref
-in
 
-type 'a f = 'a ref M.f
+type 'a f = 'a N.f M.f
 
-fun map f = M.map (lift f)
+fun map f = (M.map o N.map) f
 
-end (* local *)
-end (* RefMap *)
+end (* ComposeMap *)
 
+functor KeyMap (type key) : MAP =
+struct
+
+type 'a f = key * 'a
+
+fun map f (k, x) = (k, f x)
+
+end (* KeyMap2 *)
