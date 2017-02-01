@@ -36,6 +36,15 @@ type 'a f = 'a ref
 fun map f = ref o f o (op !)
 
 end (* RefMap *)
+
+functor KeyMap (type key) : MAP =
+struct
+
+type 'a f = key * 'a
+
+fun map f (k, x) = (k, f x)
+
+end (* KeyMap2 *)
     
 functor ComposeMap (structure M : MAP;
 		    structure N : MAP)
@@ -47,12 +56,3 @@ type 'a f = 'a N.f M.f
 fun map f = (M.map o N.map) f
 
 end (* ComposeMap *)
-
-functor KeyMap (type key) : MAP =
-struct
-
-type 'a f = key * 'a
-
-fun map f (k, x) = (k, f x)
-
-end (* KeyMap2 *)

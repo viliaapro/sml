@@ -16,37 +16,14 @@ type 'a f		= 'a Flow.flow
 val foldl		= Flow.foldl
 end
 
-functor KeyFoldl (structure F : FOLDL;
-		  type key)
+functor BoxFoldl (structure F : FOLDL;
+		  type 'a box;
+		  val unbox : 'a box -> 'a)
 	: FOLDL =
 struct
-local open Prelude
-in
 
-type 'a f		= (key * 'a) F.f
-				       
-fun foldl f		= F.foldl (fn (x, y) => f (snd x, y))
+type 'a f = 'a box F.f
+	       
+fun foldl f = F.foldl (fn (x, y) => f (unbox x, y))
 
-end (* local *)
-end (* KeyFoldl *)
-
-functor LazyFoldl (structure F : FOLDL) : FOLDL =
-struct
-local open Lazy
-in
-
-type 'a f = 'a thunk F.f
-
-fun foldl f = F.foldl (fn (x, y) => f (force x, y))
-
-end (* local *)
-end (* LazyFoldl *)
-
-functor RefFoldl (structure F : FOLDL) : FOLDL =
-struct
-
-type 'a f = 'a ref F.f
-
-fun foldl f = F.foldl (fn (ref x, y) => f (x, y))
-
-end (* RefFoldl *)
+end (* BoxFoldl *)

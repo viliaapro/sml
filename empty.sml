@@ -16,27 +16,13 @@ type 'a f	= 'a Flow.flow
 val empty	= Flow.NIL
 end
 
-functor KeyEmpty (structure E : EMPTY;
-		  type key)
+functor BoxEmpty (structure F : EMPTY;
+		  type 'a box)
 	: EMPTY =
 struct
 
-type 'a f		= (key * 'a) E.f
-				       
-val empty		= E.empty
+type 'a f = 'a box F.f
 
-end (* KeyEmpty *)
+fun empty p = F.empty
 
-functor LazyEmpty (structure E : EMPTY)
-	: EMPTY =
-struct
-type 'a f = 'a Lazy.thunk E.f
-val empty = E.empty
-end
-
-functor RefEmpty (structure E : EMPTY)
-	: EMPTY =
-struct
-type 'a f = 'a ref E.f
-val empty = E.empty
-end
+end (* BoxEmpty *)
