@@ -30,3 +30,17 @@ val empty		= E.empty
 
 end (* local *)
 end (* EmptyEmpty *)
+
+functor LazyEmpty (structure E : EMPTY)
+	: EMPTY =
+struct
+type 'a f = 'a Lazy.thunk E.f
+val empty = E.empty
+end
+
+functor RefEmpty (structure E : EMPTY)
+	: EMPTY =
+struct
+type 'a f = 'a ref E.f
+val empty = E.empty
+end

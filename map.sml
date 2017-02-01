@@ -20,8 +20,7 @@ functor KeyMap (structure M : MAP;
 		structure K : KEY)
 	: MAP =
 struct
-local
-    open KeyValue K
+local open KeyValue K
 in
 
 type 'a f		= (key * 'a) M.f
@@ -30,3 +29,30 @@ fun map f		= M.map (lift f)
 
 end (* local *)
 end (* KeyMap *)
+
+functor LazyMap (structure M : MAP)
+	: MAP =
+struct
+local open Lazy
+in
+
+type 'a f = 'a thunk M.f
+
+fun map f = M.map (lift f)
+
+end (* local *)
+end (* LazyMap *)
+
+functor RefMap (structure M : MAP)
+	: MAP =
+struct
+local open Ref
+in
+
+type 'a f = 'a ref M.f
+
+fun map f = M.map (lift f)
+
+end (* local *)
+end (* RefMap *)
+

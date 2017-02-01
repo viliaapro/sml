@@ -1,4 +1,6 @@
 use "prelude.sml";
+use "lazy.sml";
+use "ref.sml";
 use "flow.sml";
 use "keyvalue.sml";
 

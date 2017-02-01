@@ -10,7 +10,7 @@ local
     structure S = OptionSearch
     structure X = SearchExtra (S)
     structure P = SearchParse (S)
-    open Prelude Flow T S X P
+    open Prelude Lazy Flow T S X P
 in
 
 fun tree (p : 'a * 'a -> bool) (parent : 'a) : ('a, 'a tree) parser =

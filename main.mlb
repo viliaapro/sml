@@ -1,6 +1,8 @@
 $(SML_LIB)/basis/basis.mlb
 
 prelude.sml
+lazy.sml
+ref.sml
 flow.sml
 keyvalue.sml
 

@@ -1,8 +1,6 @@
 structure Flow = struct
-
-type 'a thunk = unit -> 'a
-
-fun force x = x ()
+local open Lazy
+in
 
 datatype 'a flow = NIL | CONS of 'a * 'a flow thunk
 
@@ -63,5 +61,6 @@ fun cartesian (xs, ys) =
 			 (x, y))
 		     ys)
 	     xs)
-			      
+
+end (* local *)
 end (* Flow *)

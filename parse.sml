@@ -1,8 +1,7 @@
 structure Transduction =
 struct
 local
-    open Flow
-    open OptionSearch
+    open Lazy Flow OptionSearch
 in
 
 exception Transduction
@@ -20,7 +19,7 @@ functor SearchParse (S : SEARCH) =
 struct
 local
     structure X = SearchExtra (S)
-    open Prelude Flow S X
+    open Prelude Lazy Flow S X
 in
 
 type ('a, 'b) search = 'a -> 'b S.f

@@ -17,7 +17,7 @@ end
 
 structure FlowCombine : COMBINE =
 struct
-local open Flow
+local open Lazy Flow
 in
 
 type 'a f = 'a flow
@@ -60,8 +60,7 @@ functor KeyCombine (structure C : COMBINE;
 		    structure K : ORD_KEY)
 	: KEY_COMBINE =
 struct
-local
-    open KeyValue K
+local open KeyValue K
 in
 
 type 'a f = (key * 'a) C.f
@@ -71,3 +70,29 @@ fun combine (l, r, c) =
 
 end (* local *)
 end (* KeyCombine *)
+
+functor LazyKeyCombine (structure C : KEY_COMBINE)
+	: KEY_COMBINE =
+struct
+local open Lazy
+in
+
+type 'a f = 'a thunk C.f
+
+fun combine (l, r, c) = C.combine (lift l, lift r, lift2 c)
+
+end (* local *)
+end (* LazyKeyCombine *)
+
+functor RefKeyCombine (structure C : KEY_COMBINE)
+	: KEY_COMBINE =
+struct
+local open Ref
+in
+
+type 'a f = 'a ref C.f
+
+fun combine (l, r, c) = C.combine (lift l, lift r, lift2 c)
+
+end (* local *)
+end (* RefKeyCombine *)
