@@ -3,9 +3,9 @@ Some SML code
 
 In `prelude.sml`, there are some basic functions like `id`.
 
-In `flow.sml`, lazy lists; in `keyvalue.sml`, key/value pairs.
+In `flow.sml`, lazy lists; in `mutlist.sml`, mutable lists.
 
-In files carrying names of list functions, there are eager, lazy, and key/value variants of such.
+In files carrying names of list functions, there are signatures and functors relating to such. Boilerplate code is in `boiler.sml`.
 
 In `combine.sml`, something akin to relational join.
 
