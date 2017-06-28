@@ -1,11 +1,10 @@
 (* Signatures *)
       
-signature MONOID =
+signature MAGMA =
 sig
-    type monoid
+    type m
 	     
-    val empty	: monoid
-    val append	: monoid * monoid -> monoid
+    val append	: m * m -> m
 end
 
 signature INNER =
@@ -13,18 +12,26 @@ sig
     type s
     type t
 
-    structure Monoid : MONOID
+    structure Magma : MAGMA
 
-    val inner	: s * t -> Monoid.monoid
+    val empty	: Magma.m
+    val inner	: s * t -> Magma.m
 end
 
-signature SCALE =
+signature SCALE_LEFT =
 sig
     type t
     type scalar
 	     
-    val scaleLeft	: scalar * t -> t
-    val scaleRight	: t * scalar -> t
+    val scale	: scalar * t -> t
+end
+
+signature SCALE_RIGHT =
+sig
+    type t
+    type scalar
+	     
+    val scale	: t * scalar -> t
 end
     
 signature TENSOR =
@@ -38,22 +45,19 @@ end
     
 (* Functors *)
 				      
-functor KeyMonoid (structure E : EMPTY;
-		   structure C : KEY_COMBINE where
-		   type 'a f = 'a E.f;
-		   structure M : MONOID)
-	: MONOID =
+functor KeyMagma (structure C : KEY_COMBINE;
+		  structure M : MAGMA)
+	: MAGMA =
 struct
 local
     open Prelude C
 in
 
-type monoid	= M.monoid f
-val empty	= E.empty
+type m		= M.m f
 val append	= combine (id, id, M.append)
 
 end (* local *)
-end (* KeyMonoid *)
+end (* KeyMagma *)
 
 functor KeyInner (structure F : FOLDL;
 		  structure C : KEY_COMBINE where
@@ -62,14 +66,16 @@ functor KeyInner (structure F : FOLDL;
 	: INNER =
 struct
 local
-    open Prelude F C I.Monoid
+    open Prelude F C I.Magma
 in
 
-type s			= I.s f
-type t			= I.t f		    
+type s	= I.s f
+type t	= I.t f		    
 
-structure Monoid	= I.Monoid
+structure Magma	= I.Magma
 
+val empty = I.empty
+		      
 fun inner (xs, ys) =
   let
       val tuple = (const empty, const empty, I.inner)
@@ -80,60 +86,84 @@ fun inner (xs, ys) =
 end (* local *)
 end (* KeyInner *)
 
-functor ScaleLeftInner (structure S : SCALE;
-			structure M : MONOID where
-			type monoid = S.t)
+functor ScaleInnerLeft (structure S : SCALE_LEFT;
+			structure M : MAGMA where
+			type m = S.t;
+			val empty : M.m)
 	: INNER =
 struct
 
 type s			= S.scalar
 type t			= S.t
 
-structure Monoid	= M
-		      
-val inner		= S.scaleLeft
-		      
-end (* ScaleLeftInner *)
+structure Magma	= M
 
-functor ScaleRightInner (structure S : SCALE
-			 structure M : MONOID where
-			 type monoid = S.t)
+val empty		= empty
+val inner		= S.scale
+		      
+end (* ScaleInnerLeft *)
+
+functor ScaleInnerRight (structure S : SCALE_RIGHT
+			 structure M : MAGMA where
+			 type m = S.t;
+			 val empty : M.m)
 	: INNER =
 struct
 
 type s			= S.t
 type t			= S.scalar
 
-structure Monoid	= M
+structure Magma	= M
 		       
-val inner		= S.scaleRight
+val empty		= empty
+val inner		= S.scale
 		      
-end (* ScaleRightInner *)
+end (* ScaleInnerRight *)
     
-functor MapScale (structure M : MAP;
-		  structure S : SCALE)
-	: SCALE =
+functor MapScaleLeft (structure M : MAP;
+		      structure S : SCALE_LEFT)
+	: SCALE_LEFT =
 struct
 
 type t		= S.t M.f
 type scalar	= S.scalar
 
-fun scaleLeft  (a, xs) = M.map (fn x => S.scaleLeft  (a, x)) xs
-fun scaleRight (xs, a) = M.map (fn x => S.scaleRight (x, a)) xs
+fun scale (a, xs) = M.map (fn x => S.scale (a, x)) xs
 
-end (* MapScale *)
+end (* MapScaleLeft *)
 
-functor MonoidScale (structure M : MONOID) : SCALE =
+functor MapScaleRight (structure M : MAP;
+		       structure S : SCALE_RIGHT)
+	: SCALE_RIGHT =
 struct
 
-type t		= M.monoid
-type scalar	= M.monoid
+type t		= S.t M.f
+type scalar	= S.scalar
 
-val scaleLeft	= M.append
-val scaleRight	= M.append
+fun scale (xs, a) = M.map (fn x => S.scale (x, a)) xs
 
-end (* MonoidScale *)
+end (* MapScaleRight *)
+    
+functor MagmaScaleLeft (structure M : MAGMA) : SCALE_LEFT =
+struct
 
+type t		= M.m
+type scalar	= M.m
+
+val scale	= M.append
+
+end (* MagmaScaleLeft *)
+
+functor MagmaScaleRight (structure M : MAGMA) : SCALE_RIGHT =
+struct
+
+type t		= M.m
+type scalar	= M.m
+
+val scale	= M.append
+
+end (* MagmaScaleRight *)
+    
 functor MapTensor (structure M : MAP;
 		   structure T : TENSOR)
 	: TENSOR =
@@ -147,13 +177,24 @@ fun tensor (xs, y) = M.map (fn x => T.tensor (x, y)) xs
 
 end (* MapTensor *)
     
-functor ScaleTensor (structure S : SCALE) : TENSOR =
+functor ScaleTensorLeft (structure S : SCALE_LEFT) : TENSOR =
 struct
 
 type s		= S.scalar
 type t		= S.t
 type u		= S.t
 
-val tensor	= S.scaleLeft
+val tensor	= S.scale
+
+end (* ScaleTensor *)
+
+functor ScaleTensorRight (structure S : SCALE_RIGHT) : TENSOR =
+struct
+
+type s		= S.t
+type t		= S.scalar
+type u		= S.t
+
+val tensor	= S.scale
 
 end (* ScaleTensor *)
